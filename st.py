@@ -25,7 +25,7 @@ def main():
         elif table == 'Address':
             plot_table_summary('Address')
         
-        elif table == 'Organizaiton_Address':
+        elif table == 'Organization_Address':
             plot_table_summary('Organization_Address')
         
         elif table == 'Client_Hierarchy':
