@@ -1,5 +1,5 @@
 geopy==2.1.0
-psycopg2==2.8.6
+psycopg2-binary==2.8.6
 streamlit==0.78.0
 Unidecode==1.2.0
 tensorflow==2.4.1
