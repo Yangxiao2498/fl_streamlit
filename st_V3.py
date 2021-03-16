@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 __author__ = "Yang Xiao"
+'''
+Edited by John
 
+'''
 
 import streamlit as st
 import pandas as pd
@@ -72,7 +75,7 @@ def main():
     st.sidebar.title('Navigation')
     
     pwd = ''
-    page = st.sidebar.selectbox('Option',['Preface','User Sign in','ML data quality check','Table Summary'])
+    page = st.sidebar.selectbox('Option',['Preface','User Sign in','Data Quality Check','Table Summary'])
     if page == 'Preface':
         st.markdown(read_preface())
     elif page == 'User Sign in':
@@ -105,13 +108,13 @@ def main():
             st.subheader('Table top rows')
             headrows(conn,table_page)
             
-        elif page == 'ML data quality check':
+        elif page == 'Data Quality Check':
 
-            st.title('ML tools')
-            tool = st.radio('Tool selection',('Data quality check','Info entry'))
-            if tool == 'Data quality check':
+            st.title('Tool list')
+            tool = st.radio('Tool selection',('Data Quality','Info Entry'))
+            if tool == 'Data Quality':
                 data_quality_ui()
-            elif tool == 'Info entry':
+            elif tool == 'Info Entry':
                 source_entry()
             else:
                 st.subheader('Please choose a tool')
@@ -123,12 +126,13 @@ def data_quality_ui():
     option = st.radio('Please choose what type of data you input:',
                         ('Date','Name','Address'))
     if option == 'Date':
-        time_input = st.text_input('Please enter date type info to check','Tue 10 Jul 2007')
+        time_input = st.text_input('Please enter date type info to check','10 Jul 2007')
         if st.button('Check'):
             with st.spinner('Transforming date with ML...'):
                 time_output = date_format(time_input)
             try:
-                time_output2 = dateparser.parser(time_input).strftime("%Y-%m-%d")
+                time_output2 = dateparser.parser(time_input).strftime('%d-%m-%Y')
+
                 st.write('Date Parser: {}'.format(time_output2))
             except:
                 st.write('Could not transform entered date with Date Parser')
@@ -141,12 +145,13 @@ def data_quality_ui():
             st.write(name_input)
     if option  == 'Address':
         st.write('Please enter address here')
-        address1 = st.text_input('Address',key='2')
-        city = st.text_input('City',key='3')
-        state = st.text_input('State/Province',key='4')
-        zip_code = st.text_input('Zip/Postal Code',key='5')    
+        address1 = st.text_input('Address','1 Liberty St',key='2')
+        city = st.text_input('City','New York',key='3')
+        state = st.text_input('State/Province','New York',key='4')
+        zip_code = st.text_input('Zip/Postal Code','10016',key='5')    
         if st.button('Check'):
             exist_response,valid_response = AddressCheck(address1, city, state, zip_code,True,True)
+            #st.write(exist_response,valid_response)
             if exist_response and valid_response:
                 st.write('Address is valid and exist in our database. Address ID is %s' % exist_response)
             elif valid_response and not exist_response:
@@ -187,10 +192,10 @@ def source_entry():
         #     st.write('Successfully added')
     if option == 'Address':
         st.write('Please enter address here')
-        address1 = st.text_input('Address',key='2')
-        city = st.text_input('City',key='3')
-        state = st.text_input('State/Province',key='4')
-        zip_code = st.text_input('Zip/Postal Code',key='5')
+        address1 = st.text_input('Address','1 Liberty St',key='2')
+        city = st.text_input('City','New York',key='3')
+        state = st.text_input('State/Province','New York',key='4')
+        zip_code = st.text_input('Zip/Postal Code','10016',key='5')
         if st.button('Check Address'):
             exist_response,valid_response = AddressCheck(address1, city, state, zip_code,True,True)
             if exist_response and valid_response:
@@ -370,8 +375,11 @@ def date_format(datein):
     pred = model.predict([datein_int, s0, c0])
     pred = numpy.argmax(pred, axis = -1)
     dateout = [inv_machine_vocab[int(i)] for i in pred]
-    dateout = ''.join(dateout)
-    
+    yr = ''.join(dateout[0:4])
+    mn = ''.join(dateout[5:7])
+    dy = ''.join(dateout[8:10])
+    dateout = mn+'-'+dy+'-'+yr
+
     return dateout
     
 def string_to_int(string, length, vocab):
@@ -406,7 +414,7 @@ def cleaned(name):
     name = re.sub('\W+',' ', unidecode.unidecode(name).lower())
     return name
     
-@st.cache
+#@st.cache
 def read_preface():
     url = 'https://raw.githubusercontent.com/Yangxiao2498/fl_streamlit/main/Preface.md'
     response = urllib.request.urlopen(url)
