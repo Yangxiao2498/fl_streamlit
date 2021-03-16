@@ -1,14 +1,13 @@
 #!/usr/bin/env python3
 __author__ = "Yang Xiao"
-'''
-Edited by John
 
-'''
+__editor__ = "John Onwuemeka"
+
+
 
 import streamlit as st
 import pandas as pd
 import numpy as numpy
-import matplotlib.pyplot as plt
 import urllib,pickle,json,os
 import seaborn as sns
 import psycopg2
