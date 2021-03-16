@@ -9,7 +9,7 @@ import streamlit as st
 import pandas as pd
 import numpy as numpy
 import urllib,pickle,json,os
-import seaborn as sns
+#import seaborn as sns
 import psycopg2
 import unidecode,re,dateparser
 from date_model import *
